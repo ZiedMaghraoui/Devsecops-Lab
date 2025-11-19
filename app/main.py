@@ -1,4 +1,5 @@
 from flask import Flask, request
+from markupsafe import escape
 
 app = Flask(__name__)
 
@@ -10,7 +11,8 @@ def index():
 @app.route("/vulnerable")
 def vulnerable():
     user_input = request.args.get("input", "")
-    return f"You sent: {user_input}"
+    safe_input = escape(user_input)
+    return f"You sent: {safe_input}"
 
 # Optional: simple auth bypass or insecure endpoint for SAST/DAST
 @app.route("/admin")

@@ -6,7 +6,13 @@ def test_index():
     assert response.status_code == 200
     assert b"Hello" in response.data
 
-# def test_vulnerable():
-#     client = app.test_client()
-#     response = client.get("/vulnerable?input=<script>alert('XSS')</script>")
-#     assert b"You sent: &lt;script&gt;alert('XSS')&lt;/script&gt;" in response.data
+def test_vulnerable_route_escapes_input():
+    client = app.test_client()
+    payload = "<script>alert('xss')</script>"
+    response = client.get(f"/vulnerable?input={payload}")
+    assert response.status_code == 200
+    # The payload should NOT appear unescaped
+    assert payload not in response.text
+    # The payload should appear escaped
+    assert "&lt;script&gt;" in response.text
+    assert "&lt;/script&gt;" in response.text
