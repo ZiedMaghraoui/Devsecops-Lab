@@ -12,18 +12,13 @@ def index():
     <a href="/login">Login</a>
     """
 
-# XSS vulnerability
+
 @app.route("/vulnerable")
 def vulnerable():
     user_input = request.args.get("input", "")
     safe_input = escape(user_input)
     return f"You sent: {safe_input}"
 
-@app.route("/sum")
-def sum():
-    a = request.args.get("a", 0)
-    b = request.args.get("b", 0)
-    return str(int(a) + int(b))
 
 @app.route("/redirect")
 def redirect_me():
@@ -38,7 +33,6 @@ def login():
     return resp
 
 
-
 # simple auth bypass or insecure endpoint for SAST/DAST
 @app.route("/admin")
 def admin():
@@ -48,5 +42,4 @@ def admin():
     return "Access denied."
 
 if __name__ == "__main__":
-    # Bind to all interfaces for Docker + ZAP
     app.run(host="0.0.0.0", port=8000)
