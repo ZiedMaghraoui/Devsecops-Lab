@@ -50,6 +50,20 @@ jobs:
           format: "table"
           exit-code: "1" # Fail the pipeline if vulnerabilities found
           severity: "CRITICAL,HIGH"
+      - name: Generate HTML report
+        run: |
+          trivy fs --severity CRITICAL,HIGH --format template --template "@contrib/html.tpl" . > trivy-report.html
+      - name: Generate SBOM (CycloneDX)
+        run: |
+          trivy fs --format cyclonedx --output sbom.cdx .
+      - name: Upload Trivy Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: trivy-reports
+          path: |
+            trivy-report.json
+            trivy-report.html
+            sbom.cdx
 
   zap_scan:
     runs-on: ubuntu-latest
@@ -70,10 +84,6 @@ jobs:
       - name: Check app from runner
         run: |
           curl -v http://127.0.0.1:8000/vulnerable || echo "App not reachable"
-      - name: Verify rules file exists
-        run: |
-          ls -la .zap/
-          cat .zap/rules.tsv
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.15.0
         with:
