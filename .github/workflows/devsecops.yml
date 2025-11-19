@@ -71,7 +71,6 @@ jobs:
 
   zap_scan:
     runs-on: ubuntu-latest
-    name: zap
     needs: trivy_sca
     permissions:
       issues: write
