@@ -14,6 +14,12 @@ def vulnerable():
     safe_input = escape(user_input)
     return f"You sent: {safe_input}"
 
+@app.route("/sum")
+def sum():
+    a = request.args.get("a", 0)
+    b = request.args.get("b", 0)
+    return str(int(a) + int(b))
+
 # Optional: simple auth bypass or insecure endpoint for SAST/DAST
 @app.route("/admin")
 def admin():

@@ -16,3 +16,9 @@ def test_vulnerable_route_escapes_input():
     # The payload should appear escaped
     assert "&lt;script&gt;" in response.text
     assert "&lt;/script&gt;" in response.text
+
+def test_sum_route():
+    client = app.test_client()
+    response = client.get("/sum?a=1&b=2")
+    assert response.status_code == 200
+    assert b"3" in response.data
