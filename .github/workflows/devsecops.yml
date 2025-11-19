@@ -1,7 +1,6 @@
 name: DevSecOps Pipeline
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -77,7 +76,6 @@ jobs:
           target: http://localhost:8000/vulnerable # Change URL or IP of your target application
           rules_file_name: ".zap/rules.tsv"
           cmd_options: "-a"
-          allow_issue_writing: false
       - name: Stop Docker container
         if: always()
         run: |
