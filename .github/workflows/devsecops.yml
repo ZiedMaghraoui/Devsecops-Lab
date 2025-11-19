@@ -55,6 +55,9 @@ jobs:
     runs-on: ubuntu-latest
     name: zap
     needs: trivy_sca
+    permissions:
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
@@ -72,7 +75,7 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.6.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           docker_name: zaproxy/zap-stable
           target: http://localhost:8000/vulnerable
           rules_file_name: ".zap/rules.tsv"
