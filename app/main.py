@@ -12,7 +12,7 @@ def index():
     <a href="/login">Login</a>
     """
 
-# Reflects user input directly → XSS vulnerability
+# XSS vulnerability
 @app.route("/vulnerable")
 def vulnerable():
     user_input = request.args.get("input", "")
@@ -39,7 +39,7 @@ def login():
 
 
 
-# Optional: simple auth bypass or insecure endpoint for SAST/DAST
+# simple auth bypass or insecure endpoint for SAST/DAST
 @app.route("/admin")
 def admin():
     token = request.args.get("token", "")
