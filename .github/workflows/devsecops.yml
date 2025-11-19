@@ -55,6 +55,8 @@ jobs:
     runs-on: ubuntu-latest
     name: zap
     needs: trivy_sca
+    permissions:
+      issues: write
     steps:
       - uses: actions/checkout@v2
       - name: Build Docker image
@@ -78,6 +80,7 @@ jobs:
           target: http://127.0.0.1:8000/vulnerable
           rules_file_name: ".zap/rules.tsv"
           cmd_options: "-a"
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Stop Docker container
         if: always()
         run: |
