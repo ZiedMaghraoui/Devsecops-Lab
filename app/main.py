@@ -5,7 +5,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return "Hello Secure DevSecOps!"
+    return """
+    <a href="/vulnerable?input=<script>alert('xss')</script>">Vulnerable</a>
+    <a href="/sum?a=1&b=2">Sum</a>
+    <a href="/redirect?url=http://google.com">Redirect</a>
+    <a href="/login">Login</a>
+    """
 
 # Reflects user input directly → XSS vulnerability
 @app.route("/vulnerable")
