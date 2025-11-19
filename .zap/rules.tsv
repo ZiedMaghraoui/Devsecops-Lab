@@ -1,4 +1,2 @@
 # alertId  riskId  action
-10021   1   IGNORE
-10038   1   IGNORE
-10015   1   IGNORE
+*   FAIL
