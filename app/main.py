@@ -1,5 +1,5 @@
 from flask import Flask, request
-from markupsafe import escape
+import os
 
 app = Flask(__name__)
 
@@ -7,12 +7,18 @@ app = Flask(__name__)
 def index():
     return "Hello Secure DevSecOps!"
 
-# Reflects user input directly → XSS vulnerability
+# XSS vulnerability
 @app.route("/vulnerable")
 def vulnerable():
     user_input = request.args.get("input", "")
-    safe_input = escape(user_input)
-    return f"You sent: {safe_input}"
+    return f"You sent: {user_input}"
+
+# Command injection
+@app.route("/ping")
+def ping():
+    host = request.args.get("host")
+    os.system(f"ping -c 1 {host}")
+    return "Ping sent!"
 
 @app.route("/sum")
 def sum():
