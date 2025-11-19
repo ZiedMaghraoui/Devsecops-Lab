@@ -6,12 +6,11 @@ app = Flask(__name__)
 def index():
     return "Hello Secure DevSecOps!"
 
-# Vulnerable route for teaching / DAST demo:
 # Reflects user input directly → XSS vulnerability
 @app.route("/vulnerable")
 def vulnerable():
     user_input = request.args.get("input", "")
-    return f"You sent: {user_input}"  # Vulnerability: unescaped reflection
+    return f"You sent: {user_input}"
 
 # Optional: simple auth bypass or insecure endpoint for SAST/DAST
 @app.route("/admin")
