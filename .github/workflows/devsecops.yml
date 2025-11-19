@@ -72,7 +72,7 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.6.1
         with:
-          # token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           docker_name: zaproxy/zap-stable
           target: http://localhost:8000/vulnerable # Change URL or IP of your target application
           rules_file_name: ".zap/rules.tsv"
