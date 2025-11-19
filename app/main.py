@@ -14,7 +14,7 @@ def vulnerable():
     safe_input = escape(user_input)
     return f"You sent: {safe_input}"
 
-@route("/sum")
+@app.route("/sum")
 def sum():
     a = request.args.get("a", 0)
     b = request.args.get("b", 0)
