@@ -93,7 +93,8 @@ jobs:
           target: http://127.0.0.1:8000/
           cmd_options: "-a"
           token: ${{ secrets.GITHUB_TOKEN }}
-          fail_on_warning: true
+          rules_file_name: ".zap/rules.tsv"
+          fail_action: true
       - name: Stop Docker container
         if: always()
         run: |
