@@ -50,9 +50,9 @@ jobs:
           format: "table"
           exit-code: "1" # Fail the pipeline if vulnerabilities found
           severity: "CRITICAL,HIGH"
-      - name: Generate HTML report
+      - name: Generate JSON report
         run: |
-          trivy fs --severity CRITICAL,HIGH --format template --template "@html" . > trivy-report.html
+          trivy fs --severity CRITICAL,HIGH --format json . > trivy-report.json
       - name: Generate SBOM (CycloneDX)
         run: |
           trivy fs --format cyclonedx --output sbom.cdx .
@@ -62,7 +62,6 @@ jobs:
           name: trivy-reports
           path: |
             trivy-report.json
-            trivy-report.html
             sbom.cdx
 
   zap_scan:
