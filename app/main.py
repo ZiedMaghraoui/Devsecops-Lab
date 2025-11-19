@@ -28,13 +28,6 @@ def redirect_me():
 
 @app.route("/login")
 def login():
-    """
-    Handle login request.
-
-    Returns a response with a "Logged in" message and sets a session cookie
-    with the value "abc123". Note that the cookie is missing the Secure and HttpOnly
-    flags, making it vulnerable to interception and tampering.
-    """
     resp = make_response("Logged in")
     resp.set_cookie("session", "abc123")   # Missing Secure, HttpOnly
     return resp
