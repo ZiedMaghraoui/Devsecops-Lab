@@ -1,0 +1,76 @@
+name: DevSecOps Pipeline
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install -r app/requirements.txt
+      - name: Run Unit Tests
+        run: |
+          pytest -q
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  trivy_sca:
+  runs-on: ubuntu-latest
+  needs: sonarcloud
+  steps:
+    - uses: actions/checkout@v4
+    - name: Install Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: "fs"
+        scan-ref: "."
+        format: "table"
+        exit-code: "1" # Fail the pipeline if vulnerabilities found
+        severity: "CRITICAL,HIGH"
+
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: zap
+    needs: snyk
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t vulnerable-app .
+      - name: Run container
+        run: docker run -d --name app -p 8000:8000 vulnerable-app
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.6.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: "owasp/zap2docker-stable"
+          target: "http://localhost:8000/vulnerable" # Change URL or IP of your target application
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a"
+      - name: Stop Docker container
+        if: always()
+        run: |
+          docker stop app
+          docker rm app
+
