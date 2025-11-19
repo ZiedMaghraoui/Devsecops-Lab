@@ -4,7 +4,16 @@ def test_index():
     client = app.test_client()
     response = client.get("/")
     assert response.status_code == 200
-    assert b"Hello" in response.data
+    html = response.get_data(as_text=True)
+    # Check required links
+    expected_links = [
+        '/vulnerable',
+        '/sum',
+        '/redirect?url=',
+        '/login'
+    ]
+    for link in expected_links:
+        assert link in html, f"Missing link: {link}"
 
 def test_vulnerable_route_escapes_input():
     client = app.test_client()
