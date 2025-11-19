@@ -52,7 +52,7 @@ jobs:
           severity: "CRITICAL,HIGH"
       - name: Generate HTML report
         run: |
-          trivy fs --severity CRITICAL,HIGH --format template --template "@contrib/html.tpl" . > trivy-report.html
+          trivy fs --severity CRITICAL,HIGH --format template --template "@html" . > trivy-report.html
       - name: Generate SBOM (CycloneDX)
         run: |
           trivy fs --format cyclonedx --output sbom.cdx .
