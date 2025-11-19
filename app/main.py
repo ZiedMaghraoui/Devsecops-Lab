@@ -20,6 +20,20 @@ def sum():
     b = request.args.get("b", 0)
     return str(int(a) + int(b))
 
+@app.route("/redirect")
+def redirect_me():
+    url = request.args.get("url")
+    return redirect(url)
+
+
+@app.route("/login")
+def login():
+    resp = make_response("Logged in")
+    resp.set_cookie("session", "abc123")   # Missing Secure, HttpOnly
+    return resp
+
+
+
 # Optional: simple auth bypass or insecure endpoint for SAST/DAST
 @app.route("/admin")
 def admin():
