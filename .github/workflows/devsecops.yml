@@ -91,7 +91,6 @@ jobs:
         uses: zaproxy/action-baseline@v0.15.0
         with:
           target: http://127.0.0.1:8000/
-          rules_file_name: ".zap/rules.tsv"
           cmd_options: "-a"
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Stop Docker container
