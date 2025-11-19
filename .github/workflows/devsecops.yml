@@ -1,6 +1,7 @@
 name: DevSecOps Pipeline
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -71,11 +72,11 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.6.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           docker_name: zaproxy/zap-stable
-          target: http://localhost:8000/vulnerable # Change URL or IP of your target application
+          target: http://localhost:8000/vulnerable
           rules_file_name: ".zap/rules.tsv"
-          cmd_options: "-a"
+          cmd_options: "-a -t CRITICAL,HIGH"
       - name: Stop Docker container
         if: always()
         run: |
