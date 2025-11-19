@@ -18,7 +18,7 @@ def vulnerable():
 def sum():
     a = request.args.get("a", 0)
     b = request.args.get("b", 0)
-    return str(a + b)
+    return str(int(a) + int(b))
 
 # Optional: simple auth bypass or insecure endpoint for SAST/DAST
 @app.route("/admin")
