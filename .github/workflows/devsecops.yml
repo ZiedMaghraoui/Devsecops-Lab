@@ -54,7 +54,7 @@ jobs:
   zap_scan:
     runs-on: ubuntu-latest
     name: zap
-    needs: snyk
+    needs: trivy_sca
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
@@ -74,3 +74,4 @@ jobs:
         run: |
           docker stop app
           docker rm app
+
