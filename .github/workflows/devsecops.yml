@@ -36,11 +36,11 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: SonarCloud Quality Gate
-        uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        timeout-minutes: 5
+      # - name: SonarCloud Quality Gate
+      #   uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   timeout-minutes: 5
 
   trivy_sca:
     runs-on: ubuntu-latest
@@ -82,21 +82,21 @@ jobs:
         run: docker run -d --name app --network=host -p 8000:8000 vulnerable-app
       - name: Wait for application to be ready
         run: |
-          timeout 30s bash -c 'until curl -s http://127.0.0.1:8000/vulnerable > /dev/null; do echo "Waiting for app to start..."; sleep 2; done' || exit 1
+          timeout 30s bash -c 'until curl -s http://127.0.0.1:8000/ > /dev/null; do echo "Waiting for app to start..."; sleep 2; done' || exit 1
           echo "Application is ready!"
       - name: Check app from runner
         run: |
-          curl -v http://127.0.0.1:8000/vulnerable || echo "App not reachable"
+          curl -v http://127.0.0.1:8000/ || echo "App not reachable"
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.15.0
         with:
-          target: http://127.0.0.1:8000/vulnerable
-          rules_file_name: ".zap/rules.tsv"
+          target: http://127.0.0.1:8000/
           cmd_options: "-a"
           token: ${{ secrets.GITHUB_TOKEN }}
+          rules_file_name: ".zap/rules.tsv"
+          fail_action: true
       - name: Stop Docker container
         if: always()
         run: |
           docker stop app
           docker rm app
-

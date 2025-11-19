@@ -5,22 +5,35 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return "Hello Secure DevSecOps!"
+    return """
+    <a href="/vulnerable?input=<script>alert('xss')</script>">Vulnerable</a>
+    <a href="/sum?a=1&b=2">Sum</a>
+    <a href="/redirect?url=http://google.com">Redirect</a>
+    <a href="/login">Login</a>
+    """
 
-# Reflects user input directly → XSS vulnerability
+
 @app.route("/vulnerable")
 def vulnerable():
     user_input = request.args.get("input", "")
     safe_input = escape(user_input)
     return f"You sent: {safe_input}"
 
-@app.route("/sum")
-def sum():
-    a = request.args.get("a", 0)
-    b = request.args.get("b", 0)
-    return str(int(a) + int(b))
 
-# Optional: simple auth bypass or insecure endpoint for SAST/DAST
+@app.route("/redirect")
+def redirect_me():
+    url = request.args.get("url")
+    return redirect(url)
+
+
+@app.route("/login")
+def login():
+    resp = make_response("Logged in")
+    resp.set_cookie("session", "abc123")   # Missing Secure, HttpOnly
+    return resp
+
+
+# simple auth bypass or insecure endpoint for SAST/DAST
 @app.route("/admin")
 def admin():
     token = request.args.get("token", "")
@@ -29,5 +42,4 @@ def admin():
     return "Access denied."
 
 if __name__ == "__main__":
-    # Bind to all interfaces for Docker + ZAP
     app.run(host="0.0.0.0", port=8000)
